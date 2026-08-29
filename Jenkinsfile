@@ -6,6 +6,30 @@ pipeline {
         maven 'maven3'
     }
 
+    environment {
+        // GCP Artifact Registry Details
+        GCP_REGION   = 'asia-southeast1' // Replace with your region (e.g., us-central1)
+        GCP_PROJECT  = 'gcp-web-example'
+        // Jenkins Credentials ID containing your GCP Service Account JSON key
+        GCP_CRED_ID  = 'gcp-service-niwatz3000-key' 
+
+        //REGISTRY_URL = 'asia-east1-docker.pkg.dev'        
+
+
+        //asia-southeast1-docker.pkg.dev/gcp-web-example/niwatz3000-docker-repo
+
+        REPO_NAME    = 'niwatz3000-docker-repo'
+        IMAGE_NAME   = 'gcp-api-fnc-example'
+        IMAGE_TAG    = "${BUILD_NUMBER}"
+        
+        REGISTRY_URL = "${GCP_REGION}-docker.pkg.dev"
+
+
+        FULL_IMAGE   = "${REGISTRY_URL}/${GCP_PROJECT}/${REPO_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
+        SHORT_IMAGE   = "${REGISTRY_URL}/${GCP_PROJECT}/${REPO_NAME}/${IMAGE_NAME}"
+        
+    }    
+
     stages {
         stage('Code Checkout') {
             steps {
@@ -39,33 +63,100 @@ pipeline {
        stage("Docker Build & Push"){
             steps{
                 script{
-                    withDockerRegistry(credentialsId: 'DockerHub-Token', toolName: 'docker') {
-                        def imageName = "spring-boot-prof-management"
-                        def buildTag = "${imageName}:${BUILD_NUMBER}"
-                        def latestTag = "${imageName}:latest"  // Define latest tag
+
+
+                    withDockerRegistry(credentialsId: GCP_CRED_ID, toolName: 'docker') {
+
+                        def imageName = "gcp-api-fnc-example"
+
+                        def buildTag = "${FULL_IMAGE}"
+                        def latestTag = "${SHORT_IMAGE}:latest"  // Define latest tag
                         
                         sh "docker build -t ${imageName} -f Dockerfile.final ."
+                        
+                        cat "${GCP_KEY}" | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
+
                         sh "docker tag ${imageName} abdeod/${buildTag}"
                         sh "docker tag ${imageName} abdeod/${latestTag}"  // Tag with latest
+
                         sh "docker push abdeod/${buildTag}"
                         sh "docker push abdeod/${latestTag}"  // Push latest tag
+
                         env.BUILD_TAG = buildTag
                     }
+
+                    // withCredentials([file(credentialsId: GCP_CRED_ID, variable: 'GCP_KEY')]) {
+                    //     sh '''
+                    //         # ตัวอย่าง: Login Docker เข้า GCP Artifact Registry
+                    //         cat $GCP_KEY | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
+                            
+                    //         # ตัวอย่าง: Authenticate gcloud CLI
+                    //         # gcloud auth activate-service-account --key-file=$GCP_KEY
+                    //     '''
+                    // }
+
                         
                 }
             }
         }
-        
-        stage('Vulnerability scanning'){
-            steps{
-                sh " trivy image abdeod/${buildTag}"
+
+
+
+
+
+
+
+
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${FULL_IMAGE} ."
+                }
             }
         }
 
-        stage("Staging"){
-            steps{
-                sh 'docker-compose up -d'
+        stage('Authenticate & Push to GCP') {
+            steps {
+                // Secret file binding for GCP Service Account JSON Key
+                withCredentials([file(credentialsId: GCP_CRED_ID, variable: 'GCP_KEY')]) {
+                    sh '''
+                        # Authenticate Docker using the GCP Service Account Key
+                        cat $GCP_KEY | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
+                        
+                        # Push the image
+                        docker push ${FULL_IMAGE}
+                        
+                        # Optional: Push latest tag
+                        docker tag ${FULL_IMAGE} ${REGISTRY_URL}/${GCP_PROJECT}/${REPO_NAME}/${IMAGE_NAME}:latest
+                        docker push ${REGISTRY_URL}/${GCP_PROJECT}/${REPO_NAME}/${IMAGE_NAME}:latest
+                    '''
+                }
             }
         }
+
+        
+        // stage('Vulnerability scanning'){
+        //     steps{
+        //         sh " trivy image abdeod/${buildTag}"
+        //     }
+        // }
+
+        // stage("Staging"){
+        //     steps{
+        //         sh 'docker-compose up -d'
+        //     }
+        // }
+
     }
+
+    post {
+        always {
+            // Cleanup local docker images to save disk space
+            sh "docker rmi ${FULL_IMAGE} || true"
+            sh "docker logout https://${REGISTRY_URL} || true"
+        }
+    }
+
+
 }
