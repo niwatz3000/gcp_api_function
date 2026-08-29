@@ -68,7 +68,8 @@ pipeline {
 
 
                     //withDockerRegistry([file(credentialsId: GCP_CRED_ID, variable: 'GCP_KEY_FILE')], toolName: 'docker') {
-                    withDockerRegistry([file(credentialsId: GCP_CRED_ID, variable: 'GCP_KEY_FILE')], toolName: 'docker') {
+                    //withDockerRegistry([file(credentialsId: GCP_CRED_ID, variable: 'GCP_KEY_FILE')], toolName: 'docker') {
+                    withCredentials([file(credentialsId: GCP_CRED_ID, variable: 'GCP_KEY_FILE')]) {    
                         
                         sh 'gcloud auth activate-service-account --key-file=$GCP_KEY_FILE'
                         
