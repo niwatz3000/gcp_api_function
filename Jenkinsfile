@@ -66,8 +66,6 @@ pipeline {
 
 
                     withDockerRegistry(credentialsId: GCP_CRED_ID, toolName: 'docker') {
-
-
                         
                         
                         echo "https://${REGISTRY_URL}"
@@ -160,8 +158,8 @@ pipeline {
     post {
         always {
             // Cleanup local docker images to save disk space
-            sh "docker rmi ${FULL_IMAGE} || true"
-            sh "docker logout https://${REGISTRY_URL} || true"
+            // sh "docker rmi ${FULL_IMAGE} || true"
+            // sh "docker logout https://${REGISTRY_URL} || true"
         }
     }
 
