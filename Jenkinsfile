@@ -9,11 +9,7 @@ pipeline {
     stages {
         stage('Code Checkout') {
             steps {
-<<<<<<< HEAD
-                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/niwatz3000/gcp_api_function.git
-=======
                 git branch: 'main', changelog: false, poll: false, url: 'https://github.com/niwatz3000/gcp_api_function.git'
->>>>>>> 8350887b723a1f242e6adf99efe533a43dc433f4
             }
         }
         
