@@ -86,7 +86,11 @@ pipeline {
                         // def latestTag = "${SHORT_IMAGE}:latest"  // Define latest tag
                         
                         
-                        cat " ${GCP_KEY_FILE} | docker login -u _json_key --password-stdin https://${REGISTRY_URL} "
+                        //cat " ${GCP_KEY_FILE} | docker login -u _json_key --password-stdin https://${REGISTRY_URL} "
+
+                        sh '''
+                                cat $GCP_KEY_FILE | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
+                            '''                        
 
                         //cat $GCP_KEY_FILE | docker login -u _json_key --password-stdin https://REGION-docker.pkg.dev
 
