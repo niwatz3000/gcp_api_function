@@ -79,8 +79,13 @@ pipeline {
                         sh "docker tag ${imageName} abdeod/${buildTag}"
                         sh "docker tag ${imageName} abdeod/${latestTag}"  // Tag with latest
 
-                        sh "docker push abdeod/${buildTag}"
-                        sh "docker push abdeod/${latestTag}"  // Push latest tag
+
+                        echo "https://${buildTag}"
+                        echo "https://${latestTag}"
+
+
+                        sh "docker push https://${buildTag}"
+                        sh "docker push https://${latestTag}"  // Push latest tag
 
                         env.BUILD_TAG = buildTag
                     }
