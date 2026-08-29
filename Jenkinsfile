@@ -74,7 +74,7 @@ pipeline {
                         
                         sh "docker build -t ${imageName} -f Dockerfile.final ."
                         
-                        cat "${GCP_KEY}" | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
+                        //cat "${GCP_KEY}" | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
 
                         sh "docker tag ${imageName} abdeod/${buildTag}"
                         sh "docker tag ${imageName} abdeod/${latestTag}"  // Tag with latest
