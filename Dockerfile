@@ -3,7 +3,7 @@ FROM maven:3.8.4-openjdk-17 AS builder
 WORKDIR /app
 COPY ./src ./src
 COPY ./pom.xml .
-RUN mvn package -DskipTests
+RUN mvn package -gcp_api_function
 
 # Stage 2: Create the final image
 FROM openjdk:17-jdk-alpine

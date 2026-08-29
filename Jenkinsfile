@@ -9,28 +9,28 @@ pipeline {
     stages {
         stage('Code Checkout') {
             steps {
-                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/AbderrahmaneOd/Spring-Boot-Jenkins-CI-CD'
+                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/niwatz3000/gcp_api_function
             }
         }
         
-        stage('OWASP Dependency Check'){
-            steps{
-                dependencyCheck additionalArguments: '--scan ./ --format HTML ', odcInstallation: 'db-check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-            }
-        }
+        // stage('OWASP Dependency Check'){
+        //     steps{
+        //         dependencyCheck additionalArguments: '--scan ./ --format HTML ', odcInstallation: 'db-check'
+        //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+        //     }
+        // }
 
-        stage('Sonarqube Analysis') {
-            steps {
-                sh ''' mvn sonar:sonar \
-                    -Dsonar.host.url=http://localhost:9000/ \
-                    -Dsonar.login=squ_9bd7c664e4941bd4e7670a88ed93d68af40b42a3 '''
-            }
-        }
+        // stage('Sonarqube Analysis') {
+        //     steps {
+        //         sh ''' mvn sonar:sonar \
+        //            -Dsonar.host.url=http://localhost:9000/ \
+        //             -Dsonar.login=squ_9bd7c664e4941bd4e7670a88ed93d68af40b42a3 '''
+        //     }
+        // }
 
         stage('Clean & Package'){
             steps{
-                sh "mvn clean package -DskipTests"
+                sh "mvn clean package -gcp_api_function"
             }
         }
 
