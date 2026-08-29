@@ -65,8 +65,12 @@ pipeline {
                 script{
 
 
-                    withDockerRegistry(credentialsId: GCP_CRED_ID, toolName: 'docker') {
+
+
+                    //withDockerRegistry([file(credentialsId: GCP_CRED_ID, variable: 'GCP_KEY_FILE')], toolName: 'docker') {
+                    withDockerRegistry([file(credentialsId: GCP_CRED_ID, variable: 'GCP_KEY_FILE')], toolName: 'docker') {
                         
+                        sh 'gcloud auth activate-service-account --key-file=$GCP_KEY_FILE'
                         
                         echo "https://${REGISTRY_URL}"
                         sh "docker build -t ${FULL_IMAGE} -f Dockerfile.final ."
