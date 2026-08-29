@@ -94,8 +94,8 @@ pipeline {
 
 
 
-                        sh "docker push https://${FULL_IMAGE}"
-                        sh "docker push https://${SHORT_IMAGE}:latest"  // Push latest tag
+                        sh "docker push ${FULL_IMAGE}"
+                        sh "docker push ${SHORT_IMAGE}:latest"  // Push latest tag
 
                                  
                         //sh "docker rmi ${FULL_IMAGE} || true"
@@ -171,6 +171,10 @@ pipeline {
             //   sh "docker build -t ${FULL_IMAGE} -f Dockerfile.final ."               
             //   sh "docker rmi ${FULL_IMAGE} || true"
                  echo " ${FULL_IMAGE}  "
+                 echo " ${SHORT_IMAGE}:latest "
+
+
+                 
         }
     }
 
