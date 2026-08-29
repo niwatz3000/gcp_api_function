@@ -170,6 +170,7 @@ pipeline {
             // sh "docker logout https://${REGISTRY_URL} || true"
             //   sh "docker build -t ${FULL_IMAGE} -f Dockerfile.final ."               
             //   sh "docker rmi ${FULL_IMAGE} || true"
+                 echo " ${FULL_IMAGE}  "
         }
     }
 
