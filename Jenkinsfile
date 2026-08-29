@@ -98,9 +98,9 @@ pipeline {
                         sh "docker push https://${SHORT_IMAGE}:latest"  // Push latest tag
 
                                  
-                        sh "docker rmi ${FULL_IMAGE} || true"
+                        //sh "docker rmi ${FULL_IMAGE} || true"
 
-                        env.BUILD_TAG = buildTag
+                        //env.BUILD_TAG = buildTag
 
                     }
 
