@@ -30,7 +30,7 @@ pipeline {
 
         stage('Clean & Package'){
             steps{
-                sh "mvn clean package -gcp_api_function"
+                sh "mvn clean package -D gcp_api_function"
             }
         }
 
