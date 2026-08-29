@@ -78,7 +78,7 @@ pipeline {
 
                         // def imageName = "${IMAGE_NAME}:${IMAGE_TAG}"
                         
-                        echo "${imageName}"
+                        //echo "${imageName}"
 
                         // def buildTag = "${FULL_IMAGE}"
                         // def latestTag = "${SHORT_IMAGE}:latest"  // Define latest tag
@@ -86,7 +86,7 @@ pipeline {
                         
                         //cat "${GCP_KEY}" | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
 
-                        echo "https://${buildTag}"
+                        //echo "https://${buildTag}"
 
                         // sh "docker tag ${imageName} abdeod/${buildTag}"
                         // sh "docker tag ${imageName} abdeod/${latestTag}"  // Tag with latest
@@ -94,8 +94,11 @@ pipeline {
 
 
 
-                        sh "docker push https://${buildTag}"
-                        sh "docker push https://${latestTag}"  // Push latest tag
+                        sh "docker push https://${FULL_IMAGE}"
+                        sh "docker push https://${SHORT_IMAGE}:latest"  // Push latest tag
+
+                                 
+                        sh "docker rmi ${FULL_IMAGE} || true"
 
                         env.BUILD_TAG = buildTag
 
@@ -165,7 +168,8 @@ pipeline {
             // Cleanup local docker images to save disk space
             // sh "docker rmi ${FULL_IMAGE} || true"
             // sh "docker logout https://${REGISTRY_URL} || true"
-               sh "docker build -t ${FULL_IMAGE} -f Dockerfile.final ."
+            //   sh "docker build -t ${FULL_IMAGE} -f Dockerfile.final ."               
+               sh "docker rmi ${FULL_IMAGE} || true"
         }
     }
 
