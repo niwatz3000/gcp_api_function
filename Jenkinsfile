@@ -160,6 +160,7 @@ pipeline {
             // Cleanup local docker images to save disk space
             // sh "docker rmi ${FULL_IMAGE} || true"
             // sh "docker logout https://${REGISTRY_URL} || true"
+               sh "docker build -t ${FULL_IMAGE} ."
         }
     }
 
