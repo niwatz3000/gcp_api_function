@@ -74,7 +74,7 @@ pipeline {
                         
                         sh "docker build -t ${imageName} -f Dockerfile.final ."
                         
-                        cat "${GCP_KEY} | docker login -u _json_key --password-stdin https://${REGISTRY_URL}"
+                        cat "${GCP_KEY}" | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
 
                         sh "docker tag ${imageName} abdeod/${buildTag}"
                         sh "docker tag ${imageName} abdeod/${latestTag}"  // Tag with latest
@@ -102,19 +102,13 @@ pipeline {
 
 
 
-
-
-
-
-
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh "docker build -t ${FULL_IMAGE} ."
-                }
-            }
-        }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         script {
+        //             sh "docker build -t ${FULL_IMAGE} ."
+        //         }
+        //     }
+        // }
 
         stage('Authenticate & Push to GCP') {
             steps {
