@@ -72,6 +72,8 @@ pipeline {
                     withCredentials([file(credentialsId: GCP_CRED_ID, variable: 'GCP_KEY_FILE')]) {    
                         
                         sh 'gcloud auth activate-service-account --key-file=$GCP_KEY_FILE'
+
+                        sh 'gcloud auth configure-docker asia-southeast1-docker.pkg.dev --quiet'
                         
                         echo "https://${REGISTRY_URL}"
                         sh "docker build -t ${FULL_IMAGE} -f Dockerfile.final ."
@@ -84,7 +86,9 @@ pipeline {
                         // def latestTag = "${SHORT_IMAGE}:latest"  // Define latest tag
                         
                         
-                        //cat "${GCP_KEY}" | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
+                        cat " ${GCP_KEY} | docker login -u _json_key --password-stdin https://${REGISTRY_URL} "
+
+                        //cat $GCP_KEY_FILE | docker login -u _json_key --password-stdin https://REGION-docker.pkg.dev
 
                         //echo "https://${buildTag}"
 
@@ -96,6 +100,10 @@ pipeline {
 
                         sh "docker push ${FULL_IMAGE}"
                         sh "docker push ${SHORT_IMAGE}:latest"  // Push latest tag
+
+
+                        //docker tag my-app asia-southeast1-docker.pkg.dev/gcp-web-example/niwatz3000-docker-repo/my-app:v1
+                        //docker push asia-southeast1-docker.pkg.dev/gcp-web-example/niwatz3000-docker-repo/my-app:v1                        
 
                                  
                         //sh "docker rmi ${FULL_IMAGE} || true"
