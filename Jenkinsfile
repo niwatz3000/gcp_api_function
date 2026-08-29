@@ -110,24 +110,24 @@ pipeline {
         //     }
         // }
 
-        stage('Authenticate & Push to GCP') {
-            steps {
-                // Secret file binding for GCP Service Account JSON Key
-                withCredentials([file(credentialsId: GCP_CRED_ID, variable: 'GCP_KEY')]) {
-                    sh '''
-                        # Authenticate Docker using the GCP Service Account Key
-                        cat $GCP_KEY | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
+        // stage('Authenticate & Push to GCP') {
+        //     steps {
+        //         // Secret file binding for GCP Service Account JSON Key
+        //         withCredentials([file(credentialsId: GCP_CRED_ID, variable: 'GCP_KEY')]) {
+        //             sh '''
+        //                 # Authenticate Docker using the GCP Service Account Key
+        //                 cat $GCP_KEY | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
                         
-                        # Push the image
-                        docker push ${FULL_IMAGE}
+        //                 # Push the image
+        //                 docker push ${FULL_IMAGE}
                         
-                        # Optional: Push latest tag
-                        docker tag ${FULL_IMAGE} ${REGISTRY_URL}/${GCP_PROJECT}/${REPO_NAME}/${IMAGE_NAME}:latest
-                        docker push ${REGISTRY_URL}/${GCP_PROJECT}/${REPO_NAME}/${IMAGE_NAME}:latest
-                    '''
-                }
-            }
-        }
+        //                 # Optional: Push latest tag
+        //                 docker tag ${FULL_IMAGE} ${REGISTRY_URL}/${GCP_PROJECT}/${REPO_NAME}/${IMAGE_NAME}:latest
+        //                 docker push ${REGISTRY_URL}/${GCP_PROJECT}/${REPO_NAME}/${IMAGE_NAME}:latest
+        //             '''
+        //         }
+        //     }
+        // }
 
         
         // stage('Vulnerability scanning'){
