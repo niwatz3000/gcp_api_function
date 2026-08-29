@@ -67,7 +67,9 @@ pipeline {
 
                     withDockerRegistry(credentialsId: GCP_CRED_ID, toolName: 'docker') {
 
-                        def imageName = "gcp-api-fnc-example"
+                        def imageName = "${IMAGE_NAME}:${IMAGE_TAG}"
+                        
+                        echo "${imageName}"
 
                         def buildTag = "${FULL_IMAGE}"
                         def latestTag = "${SHORT_IMAGE}:latest"  // Define latest tag
@@ -76,12 +78,14 @@ pipeline {
                         
                         //cat "${GCP_KEY}" | docker login -u _json_key --password-stdin https://${REGISTRY_URL}
 
+                        
+                        echo "https://${buildTag}"
+                        echo "https://${buildTag}"
+
                         sh "docker tag ${imageName} abdeod/${buildTag}"
                         sh "docker tag ${imageName} abdeod/${latestTag}"  // Tag with latest
 
 
-                        echo "https://${buildTag}"
-                        echo "https://${latestTag}"
 
 
                         sh "docker push https://${buildTag}"
